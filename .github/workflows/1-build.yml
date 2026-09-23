@@ -1,0 +1,26 @@
+name: "1 · Build"
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: "Freitext"
+        required: false
+        default: "Hallo aus dem Pott"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: |
+          echo "BUILD – ${{ inputs.message }}"
+          echo "build von run ${{ github.run_id }} – ${{ inputs.message }}" > artifact.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: poc-artifact
+          path: artifact.txt
+      - name: Run-ID für die nächsten Stages ausgeben
+        run: |
+          echo "### Build fertig ✅" >> "$GITHUB_STEP_SUMMARY"
+          echo "Run-ID für Test & Deploy: \`${{ github.run_id }}\`" >> "$GITHUB_STEP_SUMMARY"

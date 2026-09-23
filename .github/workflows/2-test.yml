@@ -1,0 +1,26 @@
+name: "2 · Test"
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: "Run-ID des Build-Laufs"
+        required: true
+
+permissions:
+  actions: read   # nötig, um Artefakte aus einem anderen Run zu laden
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: poc-artifact
+          run-id: ${{ inputs.build_run_id }}
+          github-token: ${{ github.token }}
+      - name: Test
+        run: |
+          echo "TEST – Artefakt-Inhalt:"
+          cat artifact.txt
